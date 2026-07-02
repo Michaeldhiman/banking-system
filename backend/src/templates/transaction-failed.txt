@@ -1,0 +1,32 @@
+Transaction Notification - Failed
+
+Your Transaction Failed
+
+Hello {{name}},
+We were unable to process your money transfer request.
+
+----------------------------------------
+FAILURE DETECTED
+----------------------------------------
+Reason:         {{failureReason}}
+----------------------------------------
+
+----------------------------------------
+TRANSACTION ATTEMPT DETAILS
+----------------------------------------
+Intended Amount: {{amount}}
+Receiver:        {{receiver}}
+Transaction ID:  {{transactionId}}
+----------------------------------------
+
+Troubleshooting Tips:
+1. Check if your account has sufficient funds to cover the transaction.
+2. Ensure that the recipient's account details are correct.
+3. Verify if this transaction exceeds your daily or per-transaction limit.
+
+To try again, please log in to your dashboard. If you need help, please contact our support desk.
+
+Banking Ledger Inc.
+123 Financial District, Suite 500, New York, NY 10005
+
+© 2026 Banking Ledger. All rights reserved.

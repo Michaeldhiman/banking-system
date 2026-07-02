@@ -1,0 +1,26 @@
+Transaction Receipt - Success
+
+Money Sent Successfully!
+
+Hello {{name}},
+Your transaction has been completed successfully. Here are the transfer details:
+
+----------------------------------------
+RECEIPT DETAILS
+----------------------------------------
+Amount Sent:    {{amount}}
+Receiver:       {{receiver}}
+Transaction ID: {{transactionId}}
+Date & Time:    {{date}} {{time}}
+Status:         {{status}}
+----------------------------------------
+
+To review your complete transaction history, please log in to your account.
+
+Notice:
+If you do not recognize this transaction, please change your credentials immediately and reach out to our support team.
+
+Banking Ledger Inc.
+123 Financial District, Suite 500, New York, NY 10005
+
+© 2026 Banking Ledger. All rights reserved.

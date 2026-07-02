@@ -1,0 +1,22 @@
+Welcome to Banking Ledger, {{name}}!
+
+Your banking account has been successfully created. We are excited to have you on board.
+
+Here is what you can do with your new account:
+1. Secure Transactions: Transfer money securely with multi-layer encryption.
+2. Real-Time Account Management: Instantly monitor your checking and savings balances.
+3. Transaction History: Review complete statement logs and download transaction receipts.
+4. Email Alerts: Stay informed with real-time notifications for all account activities.
+
+To get started, log in to your dashboard.
+
+----------------------------------------
+Security Reminder:
+We will never ask for your password, PIN, or confidential refresh tokens via email. Always make sure you log in securely at our official website.
+----------------------------------------
+
+Banking Ledger Inc.
+123 Financial District, Suite 500, New York, NY 10005
+
+© 2026 Banking Ledger. All rights reserved.
+If you did not sign up for this account, please ignore this email or contact support.
