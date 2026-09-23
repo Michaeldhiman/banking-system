@@ -1,4 +1,5 @@
 const userModel = require("../models/user.model");
+const Blacklist = require("../models/blacklist.model");
 const bcrypt = require("bcryptjs");
 const { 
     generateAccessToken, 
@@ -175,7 +176,17 @@ async function refreshAccessTokenController(req, res) {
  * @route POST /api/v1/auth/logout
  */
 async function userLogoutController(req, res) {
+    const accessToken = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
     const refreshToken = req.cookies.refreshToken;
+
+    // Blacklist the active access token so it cannot be reused
+    if (accessToken) {
+        try {
+            await Blacklist.create({ token: accessToken });
+        } catch (err) {
+            // Token might already be blacklisted, safe to ignore duplicate error
+        }
+    }
 
     if (refreshToken) {
         try {

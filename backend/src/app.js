@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 
 // Import Routes
 const authRoutes = require("./routes/auth.routes");
@@ -16,10 +17,33 @@ app.use(cors({
     credentials: true
 }));
 
-// Mount Routes
-app.use("/api/v1/auth", authRoutes);
+// Rate limiting configurations
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 50, // Limit each IP to 50 auth requests per window
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        status: "fail",
+        message: "Too many authentication attempts from this IP, please try again after 15 minutes."
+    }
+});
+
+const transactionLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 transaction requests per window
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: {
+        status: "fail",
+        message: "Too many transaction requests from this IP, please try again after 15 minutes."
+    }
+});
+
+// Mount Routes with Rate Limiting
+app.use("/api/v1/auth", authLimiter, authRoutes);
 app.use("/api/v1/accounts", accountRoutes);
-app.use("/api/v1/transactions", transactionRoutes);
+app.use("/api/v1/transactions", transactionLimiter, transactionRoutes);
 
 // Root path handler
 app.get("/", (req, res) => {

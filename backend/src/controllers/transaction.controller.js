@@ -24,6 +24,10 @@ async function createTransactionController(req, res) {
         return res.status(400).json({ message: "Invalid fromAccount or toAccount ID format" });
     }
 
+    if (fromAccount.toString() === toAccount.toString()) {
+        return res.status(400).json({ message: "Cannot transfer money to the same account" });
+    }
+
     try {
         // Fetch source account to check ownership
         const sourceAccount = await AccountModel.findById(fromAccount);

@@ -1,4 +1,5 @@
 const userModel = require("../models/user.model");
+const Blacklist = require("../models/blacklist.model");
 const { verifyAccessToken } = require("../utils/jwt.utils");
 
 /**
@@ -17,7 +18,16 @@ async function authMiddleware(req, res, next) {
     }
 
     try {
-        // 3. Verify the access token using the utility function
+        // 3. Check if token has been blacklisted (e.g., after logout)
+        const isBlacklisted = await Blacklist.findOne({ token });
+        if (isBlacklisted) {
+            return res.status(401).json({
+                status: "failed",
+                message: "Token has been revoked"
+            });
+        }
+
+        // 4. Verify the access token using the utility function
         const decoded = verifyAccessToken(token);
 
         // 4. Retrieve the user from DB (excluding password) and attach to req.user

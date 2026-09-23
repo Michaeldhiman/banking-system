@@ -6,31 +6,42 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const User = require("../models/user.model");
+const Account = require("../models/account.model");
 
 async function seedSystemUser() {
     try {
         await mongoose.connect(process.env.MONGO_URI);
 
-        const existing = await User.findOne({ systemUser: true }).select("+systemUser");
+        let systemUser = await User.findOne({ systemUser: true }).select("+systemUser");
 
-        if (existing) {
+        if (!systemUser) {
+            systemUser = await User.create({
+                name: process.env.SYSTEM_NAME || "Central Banking System",
+                email: process.env.SYSTEM_EMAIL || "system@bank.com",
+                password: process.env.SYSTEM_PASSWORD || "SystemPassword123",
+                systemUser: true,
+            });
+            console.log("✅ System user created successfully.");
+        } else {
             console.log("✅ System user already exists.");
-            process.exit(0);
         }
 
-       
+        // Ensure system user has a primary bank account
+        const existingAccount = await Account.findOne({ user: systemUser._id });
+        if (!existingAccount) {
+            await Account.create({
+                user: systemUser._id,
+                currency: "INR",
+                status: "Active"
+            });
+            console.log("✅ System account created successfully.");
+        } else {
+            console.log("✅ System account already exists.");
+        }
 
-        await User.create({
-            name: process.env.SYSTEM_NAME,
-            email: process.env.SYSTEM_EMAIL,
-            password: process.env.SYSTEM_PASSWORD,
-            systemUser: true,
-        });
-
-        console.log("✅ System user created successfully.");
         process.exit(0);
     } catch (err) {
-        console.error(err);
+        console.error("❌ Error seeding system user/account:", err);
         process.exit(1);
     }
 }
