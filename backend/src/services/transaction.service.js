@@ -3,6 +3,7 @@ const transactionModel = require("../models/transaction.model");
 const ledgerModel = require("../models/ledger.model");
 const AccountModel = require("../models/account.model");
 const { sendTransactionEmail, sendTransactionEmailFailed } = require("./email.service");
+const { formatTransaction } = require("../utils/currency.utils");
 
 /**
  * Resolves the single System Account dynamically.
@@ -305,8 +306,10 @@ async function getTransactionHistory({ userId, accountId, type, page = 1, limit 
         .populate("fromAccount", "_id currency status")
         .populate("toAccount", "_id currency status");
 
+    const formattedTransactions = transactions.map(tx => formatTransaction(tx));
+
     return {
-        transactions,
+        transactions: formattedTransactions,
         pagination: {
             totalDocs,
             limit,
@@ -347,7 +350,7 @@ async function getTransactionDetails({ userId, transactionId }) {
         throw err;
     }
 
-    return transaction;
+    return formatTransaction(transaction);
 }
 
 module.exports = {

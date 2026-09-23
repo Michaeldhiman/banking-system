@@ -1,15 +1,20 @@
 const accountModel = require("../models/account.model");
 const mongoose = require("mongoose");
 const transactionService = require("../services/transaction.service");
+const { toStandardUnits, formatCurrency } = require("../utils/currency.utils");
 
 /**
- * Helper to sanitize account documents by converting to object and deleting internal Mongoose fields
+ * Helper to sanitize account documents by converting to object and attaching minor and standard unit balances
  * @param {Object} account - Mongoose account document
- * @returns {Object} Sanitized account object
+ * @param {number} balance - Raw balance in minor units (e.g. 100000)
+ * @returns {Object} Sanitized account object with balance fields
  */
-function sanitizeAccount(account) {
+function sanitizeAccount(account, balance = 0) {
     const obj = account.toObject();
     delete obj.__v;
+    obj.balanceMinor = balance;
+    obj.balance = toStandardUnits(balance);
+    obj.formattedBalance = formatCurrency(balance, obj.currency);
     return obj;
 }
 
@@ -65,8 +70,7 @@ async function createAccountController(req, res) {
         });
 
         const balance = await account.getBalance();
-        const accountData = sanitizeAccount(account);
-        accountData.balance = balance;
+        const accountData = sanitizeAccount(account, balance);
 
         // 5. Return response
         return res.status(201).json({
@@ -103,9 +107,7 @@ async function getAllAccountsController(req, res) {
         // Calculate balances dynamically for each account
         const data = await Promise.all(accounts.map(async (acc) => {
             const balance = await acc.getBalance();
-            const sanitized = sanitizeAccount(acc);
-            sanitized.balance = balance;
-            return sanitized;
+            return sanitizeAccount(acc, balance);
         }));
 
         // 5. Return response
@@ -154,8 +156,7 @@ async function getAccountDetailsController(req, res) {
         }
 
         const balance = await account.getBalance();
-        const accountData = sanitizeAccount(account);
-        accountData.balance = balance;
+        const accountData = sanitizeAccount(account, balance);
 
         // 5. Return response
         return res.status(200).json({
@@ -215,8 +216,7 @@ async function updateAccountStatusController(req, res) {
         await account.save();
 
         const balance = await account.getBalance();
-        const accountData = sanitizeAccount(account);
-        accountData.balance = balance;
+        const accountData = sanitizeAccount(account, balance);
 
         // 5. Return response
         return res.status(200).json({

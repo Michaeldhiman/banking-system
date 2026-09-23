@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const AccountModel = require("../models/account.model");
 const transactionService = require("../services/transaction.service");
+const { formatTransaction } = require("../utils/currency.utils");
 
 /**
  * @desc Create a new transaction (transfer) for the authenticated user
@@ -62,7 +63,7 @@ async function createTransactionController(req, res) {
 
         return res.status(statusCode).json({
             message: msg,
-            transaction: result.transaction
+            transaction: formatTransaction(result.transaction)
         });
 
     } catch (error) {
@@ -131,7 +132,7 @@ async function depositController(req, res) {
 
         return res.status(statusCode).json({
             message: msg,
-            transaction: result.transaction
+            transaction: formatTransaction(result.transaction)
         });
 
     } catch (error) {
@@ -199,7 +200,7 @@ async function withdrawController(req, res) {
 
         return res.status(statusCode).json({
             message: msg,
-            transaction: result.transaction
+            transaction: formatTransaction(result.transaction)
         });
 
     } catch (error) {
